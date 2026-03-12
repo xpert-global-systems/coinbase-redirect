@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>XPERTPay — Merchant Dashboard</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #333;
+    }
+    th {
+      background: #161b22;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Merchant Dashboard</h1>
+  <p>All payments generated through XPERTPay</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Invoice</th>
+      </tr>
+    </thead>
+    <tbody id="rows">
+      <!-- Filled by backend -->
+    </tbody>
+  </table>
+
+  <script>
+    fetch("/api/invoices")
+      .then(res => res.json())
+      .then(data => {
+        const rows = document.getElementById("rows");
+        data.forEach(inv => {
+          rows.innerHTML += `
+            <tr>
+              <td>${inv.customer}</td>
+              <td>$${inv.amount}</td>
+              <td>${inv.status}</td>
+              <td><a href="${inv.invoice_url}" target="_blank">Open</a></td>
+            </tr>
+          `;
+        });
+      });
+  </script>
+</body>
+</html>
