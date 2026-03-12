@@ -8,8 +8,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await axios.post(
-      "https://api.nowpayments.io/v1/invoice",
+    // 1) Create a NOWPayments payment (not invoice)
+    const paymentRes = await axios.post(
+      "https://api.nowpayments.io/v1/payment",
       {
         price_amount: amount,
         price_currency: "usd",
@@ -26,13 +27,21 @@ export default async function handler(req, res) {
       }
     );
 
-    const invoiceUrl = response.data.invoice_url;
+    const data = paymentRes.data;
 
-    // Redirect user straight to NOWPayments invoice
-    return res.redirect(invoiceUrl);
+    const payAddress = data.pay_address; // BTC address
+    const payAmount = data.pay_amount;   // BTC amount
+
+    // 2) Redirect to your Coinbase redirect page
+    const redirectUrl =
+      `https://xpert-global-systems.github.io/coinbase-redirect/coinbase.html` +
+      `?address=${encodeURIComponent(payAddress)}` +
+      `&amount=${encodeURIComponent(payAmount)}`;
+
+    return res.redirect(redirectUrl);
 
   } catch (error) {
     console.error(error.response?.data || error.message);
-    return res.status(500).json({ error: "Error creating invoice" });
+    return res.status(500).json({ error: "Error creating payment" });
   }
 }
