@@ -9,69 +9,93 @@
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #0a0f24, #0d1b3a);
+      background: radial-gradient(circle at top, #122044, #050914 70%);
       font-family: "Segoe UI", Arial, sans-serif;
       color: #ffffff;
-      text-align: center;
       display: flex;
-      flex-direction: column;
       justify-content: center;
+      align-items: center;
       height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Soft glowing background orbs */
+    .orb {
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.35;
+      animation: float 8s ease-in-out infinite alternate;
+    }
+    .orb.blue { background: #0052ff; top: -120px; left: -80px; }
+    .orb.purple { background: #7a3cff; bottom: -140px; right: -100px; }
+
+    @keyframes float {
+      from { transform: translateY(0px); }
+      to { transform: translateY(40px); }
     }
 
     .container {
+      position: relative;
+      z-index: 10;
+      width: 90%;
       max-width: 420px;
-      margin: auto;
-      padding: 30px;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 16px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+      padding: 35px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
+      text-align: center;
       animation: fadeIn 1.2s ease;
     }
 
     h1 {
-      font-size: 26px;
-      margin-bottom: 10px;
-      font-weight: 600;
+      font-size: 28px;
+      margin-bottom: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
     p {
       font-size: 16px;
       opacity: 0.85;
-      margin-bottom: 20px;
-    }
-
-    .button {
-      display: inline-block;
-      padding: 14px 22px;
-      background: #0052ff;
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: 600;
-      transition: 0.25s;
-    }
-
-    .button:hover {
-      background: #1a6bff;
-      transform: translateY(-2px);
+      margin-bottom: 22px;
+      line-height: 1.5;
     }
 
     .loader {
       border: 4px solid rgba(255, 255, 255, 0.2);
-      border-top: 4px solid #0052ff;
+      border-top: 4px solid #4a8bff;
       border-radius: 50%;
-      width: 38px;
-      height: 38px;
-      margin: 20px auto;
+      width: 42px;
+      height: 42px;
+      margin: 22px auto;
       animation: spin 1s linear infinite;
     }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #0052ff, #3a7bff);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      transition: 0.25s;
+      box-shadow: 0 4px 14px rgba(0, 82, 255, 0.4);
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0, 82, 255, 0.55);
     }
 
     @keyframes fadeIn {
@@ -83,9 +107,13 @@
 
 <body>
 
+  <!-- Background glow effects -->
+  <div class="orb blue"></div>
+  <div class="orb purple"></div>
+
   <div class="container">
     <h1>Processing Your Payment</h1>
-    <p>Your Coinbase Wallet will open automatically.</p>
+    <p>Your Coinbase Wallet will open automatically in a moment.</p>
 
     <div class="loader"></div>
 
