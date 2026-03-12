@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Opening Coinbase Wallet…</title>
+  <style>
+    body { background:#0d1117; color:#fff; font-family:Arial; text-align:center; padding-top:100px; }
+  </style>
+</head>
+<body>
+  <h2>Opening Coinbase Wallet…</h2>
+  <p>If nothing happens, you can continue to the secure payment page.</p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const address = params.get("address");
+    const amount = params.get("amount");
+    const invoice = params.get("invoice");
+
+    // Coinbase Wallet deep link
+    const cb = `https://wallet.coinbase.com/send?address=${address}&amount=${amount}&asset=BTC`;
+
+    // Try to open Coinbase Wallet
+    window.location.href = cb;
+
+    // Fallback to NOWPayments after 3 seconds
+    setTimeout(() => {
+      window.location.href = invoice;
+    }, 3000);
+  </script>
+</body>
+</html>
