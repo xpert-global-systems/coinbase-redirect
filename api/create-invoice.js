@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1) Create a NOWPayments payment (not invoice)
+    // 1) Create NOWPayments PAYMENT (not invoice)
     const paymentRes = await axios.post(
       "https://api.nowpayments.io/v1/payment",
       {
@@ -31,12 +31,14 @@ export default async function handler(req, res) {
 
     const payAddress = data.pay_address; // BTC address
     const payAmount = data.pay_amount;   // BTC amount
+    const invoiceUrl = data.invoice_url || data.payment_url;
 
     // 2) Redirect to your Coinbase redirect page
     const redirectUrl =
       `https://xpert-global-systems.github.io/coinbase-redirect/coinbase.html` +
       `?address=${encodeURIComponent(payAddress)}` +
-      `&amount=${encodeURIComponent(payAmount)}`;
+      `&amount=${encodeURIComponent(payAmount)}` +
+      `&invoice=${encodeURIComponent(invoiceUrl)}`;
 
     return res.redirect(redirectUrl);
 
