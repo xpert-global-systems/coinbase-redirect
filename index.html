@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XPERT Global — Secure Crypto Checkout</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0a0f24, #0d1b3a);
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #ffffff;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 1.2s ease;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 16px;
+      opacity: 0.85;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 22px;
+      background: #0052ff;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: 0.25s;
+    }
+
+    .button:hover {
+      background: #1a6bff;
+      transform: translateY(-2px);
+    }
+
+    .loader {
+      border: 4px solid rgba(255, 255, 255, 0.2);
+      border-top: 4px solid #0052ff;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Processing Your Payment</h1>
+    <p>Your Coinbase Wallet will open automatically.</p>
+
+    <div class="loader"></div>
+
+    <a id="openLink" class="button" href="#">
+      Open Coinbase Wallet Manually
+    </a>
+  </div>
+
+  <script>
+    const coinbaseLink =
+      "https://wallet.coinbase.com/send?address=bc1q28u5u08frqyxepw2z3c25djfhmjzt6y0rprndy&amount=0.07581921&asset=BTC";
+
+    window.onload = () => {
+      // Auto-open Coinbase Wallet
+      window.location.href = coinbaseLink;
+
+      // Set fallback button link
+      document.getElementById("openLink").href = coinbaseLink;
+    };
+  </script>
+
+</body>
+</html>
