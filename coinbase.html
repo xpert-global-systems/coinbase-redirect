@@ -1,14 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Opening Coinbase Wallet…</title>
+  <title>Processing Payment…</title>
   <style>
-    body { background:#0d1117; color:#fff; font-family:Arial; text-align:center; padding-top:100px; }
+    body { 
+      background: #0d1117; 
+      color: #fff; 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      padding-top: 100px;
+      margin: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .form-group {
+      margin: 20px 0;
+    }
+    input[type="number"] {
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      max-width: 300px;
+      border-radius: 8px;
+      border: 2px solid #0052ff;
+      background: rgba(0, 82, 255, 0.1);
+      color: #fff;
+      box-sizing: border-box;
+    }
+    input[type="number"]::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    button {
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #0052ff, #3a7bff);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 82, 255, 0.4);
+    }
+    .loading {
+      display: none;
+      margin-top: 20px;
+    }
+    .error {
+      color: #ff4444;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <h2>Opening Coinbase Wallet…</h2>
-  <p>If nothing happens, you can continue to the secure payment page.</p>
+  <div class="container">
+    <div id="formSection">
+      <h2>Enter Payment Amount</h2>
+      <p>How much would you like to send?</p>
+      
+      <div class="form-group">
+        <input 
+          type="number" 
+          id="amountInput" 
+          placeholder="Enter amount in BTC" 
+          step="0.00000001"
+          min="0"
+        >
+      </div>
+
+      <button onclick="processPayment()">Continue to Wallet</button>
+      <div id="errorMsg" class="error"></div>
+    </div>
+
+    <div id="loadingSection" class="loading">
+      <h2>Opening Coinbase Wallet…</h2>
+      <p>If nothing happens, you'll be redirected to the payment page.</p>
+    </div>
+  </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -16,16 +90,54 @@
     const amount = params.get("amount");
     const invoice = params.get("invoice");
 
-    // Coinbase Wallet deep link
-    const cb = `https://wallet.coinbase.com/send?address=${address}&amount=${amount}&asset=BTC`;
+    // If amount is provided in URL, skip form and go straight to wallet
+    if (amount && amount.trim() !== '') {
+      directToWallet(amount);
+    }
 
-    // Try to open Coinbase Wallet
-    window.location.href = cb;
+    function processPayment() {
+      const enteredAmount = document.getElementById('amountInput').value;
+      
+      if (!enteredAmount || enteredAmount.trim() === '') {
+        document.getElementById('errorMsg').textContent = 'Please enter a valid amount';
+        return;
+      }
 
-    // Fallback to NOWPayments after 3 seconds
-    setTimeout(() => {
-      window.location.href = invoice;
-    }, 3000);
+      directToWallet(enteredAmount);
+    }
+
+    function directToWallet(walletAmount) {
+      // Hide form, show loading
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('loadingSection').style.display = 'block';
+
+      // Validate address exists
+      if (!address) {
+        document.getElementById('errorMsg').textContent = 'Error: Wallet address missing';
+        setTimeout(() => {
+          window.location.href = invoice || '/';
+        }, 3000);
+        return;
+      }
+
+      // Build Coinbase deep link
+      const cbLink = `https://wallet.coinbase.com/send?address=${encodeURIComponent(address)}&amount=${encodeURIComponent(walletAmount)}&asset=BTC`;
+
+      // Try Coinbase first
+      window.location.href = cbLink;
+
+      // Fallback to invoice after 3 seconds if Coinbase doesn't open
+      setTimeout(() => {
+        if (invoice) {
+          window.location.href = invoice;
+        }
+      }, 3000);
+    }
+
+    // Allow Enter key to submit
+    document.getElementById('amountInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') processPayment();
+    });
   </script>
 </body>
 </html>
